@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Products</h2>
+<form class="mb-3 d-flex" method="GET" action="/products">
+    <input type="text" name="search" class="form-control me-2" placeholder="Search by product or vendor..." value="{{ search }}">
+    <button class="btn btn-success" type="submit">Search</button>
+</form>
+<table class="table table-striped">
+    <thead>
+        <tr><th>Product</th><th>Vendor</th><th>Price</th></tr>
+    </thead>
+    <tbody>
+        {% for p in products %}
+        <tr>
+            <td>{{ p['name'] }}</td>
+            <td>{{ p['vendor'] }}</td>
+            <td>${{ "%.2f"|format(p['current_price']) }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>{{ vendor['name'] }} — Dashboard</h2>
+<p class="text-muted">{{ vendor['profileinfo'] }}</p>
+
+<h4>Your Products</h4>
+<table class="table table-striped">
+    <thead>
+        <tr><th>Product</th><th>Price</th><th></th></tr>
+    </thead>
+    <tbody>
+        {% for p in products %}
+        <tr>
+            <td>{{ p['name'] }}</td>
+            <td>${{ "%.2f"|format(p['current_price']) }}</td>
+            <td>
+                <form method="POST" action="/vendor/{{ vendor['vendorid'] }}/delete/{{ p['productid'] }}" style="display:inline">
+                    <button class="btn btn-sm btn-danger" type="submit">Delete</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<h4>Add Product</h4>
+<form method="POST" action="/vendor/{{ vendor['vendorid'] }}/add" class="row g-2 mb-4">
+    <div class="col-md-5">
+        <input type="text" name="name" class="form-control" placeholder="Product name" required>
+    </div>
+    <div class="col-md-3">
+        <input type="number" name="price" class="form-control" placeholder="Price" step="0.01" min="0.01" required>
+    </div>
+    <div class="col-md-2">
+        <button class="btn btn-success" type="submit">Add</button>
+    </div>
+</form>
+{% endblock %}

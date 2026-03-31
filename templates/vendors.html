@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Vendors</h2>
+<div class="row">
+    {% for v in vendors %}
+    <div class="col-md-4 mb-3">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">{{ v['name'] }}</h5>
+                <p class="card-text">{{ v['profileinfo'] }}</p>
+                <a href="/vendor/{{ v['vendorid'] }}" class="btn btn-sm btn-success">Dashboard</a>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
