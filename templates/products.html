@@ -5,9 +5,9 @@
     <input type="text" name="search" class="form-control me-2" placeholder="Search by product or vendor..." value="{{ search }}">
     <button class="btn btn-success" type="submit">Search</button>
 </form>
-<table class="table table-striped">
+<table class="table table-striped align-middle">
     <thead>
-        <tr><th>Product</th><th>Vendor</th><th>Price</th></tr>
+        <tr><th>Product</th><th>Vendor</th><th>Price</th><th></th></tr>
     </thead>
     <tbody>
         {% for p in products %}
@@ -15,6 +15,12 @@
             <td>{{ p['name'] }}</td>
             <td>{{ p['vendor'] }}</td>
             <td>${{ "%.2f"|format(p['current_price']) }}</td>
+            <td>
+              <form method="POST" action="/cart/add/{{ p['productid'] }}" class="d-flex">
+                <input type="number" name="qty" value="1" min="1" max="20" class="form-control form-control-sm me-2" style="width:70px">
+                <button class="btn btn-sm btn-success" type="submit">Add</button>
+              </form>
+            </td>
         </tr>
         {% endfor %}
     </tbody>

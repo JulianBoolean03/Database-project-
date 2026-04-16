@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h2 class="mb-0">Smart Restock — {{ vendor['name'] }}</h2>
+  <a href="/vendor/{{ vendor['vendorid'] }}" class="btn btn-outline-secondary btn-sm">← Back to Dashboard</a>
+</div>
+
+{% if error %}
+<div class="alert alert-danger">{{ error }}</div>
+{% endif %}
+
+{% if not upcoming %}
+<div class="alert alert-warning">No upcoming markets scheduled.</div>
+{% else %}
+
+<form method="GET" class="row g-2 align-items-end mb-4">
+  <div class="col-md-8">
+    <label class="form-label">Upcoming Market</label>
+    <select name="market" class="form-select" onchange="this.form.submit()">
+      {% for m in upcoming %}
+      <option value="{{ m.marketid }}" {% if m.marketid == selected_id %}selected{% endif %}>
+        {{ m.date }} — {{ m.location }} ({{ m.weathercondition }}{% if m.isspecialevent %}, Special Event{% endif %})
+      </option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="col-md-4">
+    <button class="btn btn-primary" type="submit">Predict</button>
+  </div>
+</form>
+
+{% if market %}
+<div class="card mb-3">
+  <div class="card-body">
+    <h5 class="card-title">Market Conditions</h5>
+    <p class="mb-0">
+      <strong>{{ market.date }}</strong> — {{ market.location }} •
+      Weather: <strong>{{ market.weathercondition }}</strong> •
+      Special Event: <strong>{{ 'Yes' if market.isspecialevent else 'No' }}</strong>
+    </p>
+    {% if model_info %}
+    <p class="text-muted small mb-0 mt-2">
+      Linear regression trained on {{ model_info.rows }} historical records
+      (R² = {{ "%.3f"|format(model_info.r2) }})
+    </p>
+    {% endif %}
+  </div>
+</div>
+
+<table class="table table-hover align-middle">
+  <thead>
+    <tr>
+      <th>Product</th>
+      <th>Price</th>
+      <th>Historical Avg</th>
+      <th>Predicted Demand</th>
+      <th>Recommendation</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for p in predictions %}
+    <tr>
+      <td>{{ p.name }}</td>
+      <td>${{ "%.2f"|format(p.price) }}</td>
+      <td>{{ p.historical_avg }}</td>
+      <td><strong>{{ p.predicted_demand }}</strong></td>
+      <td><span class="badge bg-{{ p.flag_class }}">{{ p.flag }}</span></td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<p class="text-muted small">
+  <strong>High Demand</strong> = predicted &gt; 30% above historical average.
+  <strong>Potential Overstock</strong> = predicted &gt; 30% below average.
+</p>
+{% endif %}
+
+{% endif %}
+{% endblock %}

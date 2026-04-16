@@ -54,7 +54,7 @@ for market in markets:
                 qty = qty + 2
             
             #Save the OrderItem
-            all_sql.append(f"INSERT INTO OrderItem (OrderID, ProductID, PurchasePrice, Qty) VALUES (currval('order_orderid_seq'), {p_id}, {price}, {qty});")
+            all_sql.append(f"INSERT INTO OrderItem (OrderID, ProductID, PurchasePrice, Qty) VALUES (currval('\"Order_orderid_seq\"'), {p_id}, {price}, {qty});")
 
 #Save everything to the file
 with open("seed_orders.sql", "w") as f:

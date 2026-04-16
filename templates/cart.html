@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Your Cart</h2>
+{% if items %}
+<table class="table align-middle">
+  <thead>
+    <tr><th>Product</th><th>Vendor</th><th>Price</th><th>Qty</th><th>Line Total</th><th></th></tr>
+  </thead>
+  <tbody>
+    {% for i in items %}
+    <tr>
+      <td>{{ i.name }}</td>
+      <td>{{ i.vendor }}</td>
+      <td>${{ "%.2f"|format(i.price) }}</td>
+      <td>{{ i.qty }}</td>
+      <td>${{ "%.2f"|format(i.line_total) }}</td>
+      <td>
+        <form method="POST" action="/cart/remove/{{ i.product_id }}">
+          <button class="btn btn-sm btn-outline-danger" type="submit">Remove</button>
+        </form>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+  <tfoot>
+    <tr>
+      <th colspan="4" class="text-end">Total</th>
+      <th>${{ "%.2f"|format(total) }}</th>
+      <th></th>
+    </tr>
+  </tfoot>
+</table>
+<form method="POST" action="/cart/checkout">
+  <button class="btn btn-success btn-lg" type="submit">Place Order</button>
+  <a href="/products" class="btn btn-outline-secondary btn-lg">Keep Shopping</a>
+</form>
+{% else %}
+<p class="text-muted">Your cart is empty. <a href="/products">Browse products</a>.</p>
+{% endif %}
+{% endblock %}

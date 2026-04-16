@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Sales Reports</h2>
+<p class="text-muted">Analytics pulled live from the database with multi-table joins and aggregate queries.</p>
+
+<!-- Query 1 -->
+<div class="card mb-4">
+  <div class="card-header bg-success text-white">
+    <strong>Top 10 Best-Selling Products</strong>
+    <span class="small">— JOIN Product ⋈ OrderItem ⋈ Vendor, aggregate SUM(Qty)</span>
+  </div>
+  <div class="card-body p-0">
+    <table class="table table-striped mb-0">
+      <thead>
+        <tr><th>#</th><th>Product</th><th>Vendor</th><th>Units Sold</th><th>Revenue</th></tr>
+      </thead>
+      <tbody>
+      {% for r in best_sellers %}
+        <tr>
+          <td>{{ loop.index }}</td>
+          <td>{{ r['product'] }}</td>
+          <td>{{ r['vendor'] }}</td>
+          <td>{{ r['units_sold'] }}</td>
+          <td>${{ "%.2f"|format(r['revenue']) }}</td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Query 2 -->
+<div class="card mb-4">
+  <div class="card-header bg-success text-white">
+    <strong>Revenue by Weather Condition</strong>
+    <span class="small">— JOIN OrderItem ⋈ Order ⋈ Market, GROUP BY weather</span>
+  </div>
+  <div class="card-body p-0">
+    <table class="table table-striped mb-0">
+      <thead>
+        <tr><th>Weather</th><th>Orders</th><th>Units</th><th>Revenue</th><th>Avg Line Value</th></tr>
+      </thead>
+      <tbody>
+      {% for r in weather_breakdown %}
+        <tr>
+          <td><strong>{{ r['weather'] }}</strong></td>
+          <td>{{ r['orders'] }}</td>
+          <td>{{ r['units'] }}</td>
+          <td>${{ "%.2f"|format(r['revenue']) }}</td>
+          <td>${{ "%.2f"|format(r['avg_line_value']) }}</td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <div class="card-footer small text-muted">
+    Sunny markets consistently outperform — this weather signal is exactly what the Smart Restock model learns.
+  </div>
+</div>
+
+<!-- Query 3 -->
+<div class="card mb-4">
+  <div class="card-header bg-success text-white">
+    <strong>Vendor Revenue Leaderboard</strong>
+    <span class="small">— JOIN Vendor ⋈ Product ⋈ OrderItem, aggregate SUM</span>
+  </div>
+  <div class="card-body p-0">
+    <table class="table table-striped mb-0">
+      <thead>
+        <tr><th>#</th><th>Vendor</th><th>Products</th><th>Units Sold</th><th>Revenue</th></tr>
+      </thead>
+      <tbody>
+      {% for r in vendor_leaderboard %}
+        <tr>
+          <td>{{ loop.index }}</td>
+          <td>{{ r['vendor'] }}</td>
+          <td>{{ r['product_count'] }}</td>
+          <td>{{ r['units_sold'] }}</td>
+          <td>${{ "%.2f"|format(r['revenue']) }}</td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
